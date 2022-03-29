@@ -20,13 +20,13 @@ const User = require("../../models/User");
 const keys = require("../../config/keys");
 // $route GET
 // #desc 返回请求的接口数据
-router.get("/test", (req, res) => {
-  res.json({ msg: "login works" });
-});
+// router.get("/test", (req, res) => {
+//   res.json({ msg: "login works" });
+// });
 
 // register
 router.post("/register", (req, res) => {
-  console.log(req.body);
+  // console.log(req.body);
   // 查询是否存在用户
   User.findOne({ email: req.body.email }).then((user) => {
     if (user) {
@@ -38,6 +38,7 @@ router.post("/register", (req, res) => {
         email: req.body.email,
         avatar,
         password: req.body.password,
+        identity:req.body.identity
       });
       // 将密码加密后进行存储
       bcrypt.genSalt(10, function (err, salt) {
@@ -75,13 +76,15 @@ router.post('/login', (req, res) => {
       console.log(result)
       if(result){ // 用户名、密码正确
         // jwt.sign('规则','加密名字','过期时间','箭头函数')
-        const rule = {id:user.id,name:user.name}
+        const rule = {id:user.id,name:user.name,
+        avatar:user.avatar,identity:user.identity}
+        // settings jwt
         jwt.sign(rule, keys.secretOrKey,{expiresIn: 3600}, (err,token)=>{
           res.json({success:true,token:"Bearer " + token})
         })
         // return res.status(200).json({success:true,msg:'用户密码正确'})
       }else{
-        return res.status(200).json({success:true,msg:'密码不正确'})
+        return res.status(200).json({success:false,msg:'密码不正确'})
       }
     })
   })
@@ -91,7 +94,15 @@ router.post('/login', (req, res) => {
 
 
 // Private
+// 拿到数据之前验证token
+// 使用passport-jwt进行验证token
 router.get("/current", passport.authenticate("jwt",{session:false}),(req, res)=>{
-
+  console.log(req)
+  res.json({
+    id:req.user.id,
+    email:req.user.email,
+    name:req.user.name,
+    identity:req.user.identity
+  })
 })
 module.exports = router;

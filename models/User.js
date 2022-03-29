@@ -21,10 +21,15 @@ const UserSchema = new Schema({
     type: String,
     required: false,
   },
+  // 身份
+  identity: {
+    type: String,
+  },
   date: {
     type: Date,
     default: Date.now,
   },
 });
 
+// 创建user表
 module.exports = User = mongoose.model("users", UserSchema);

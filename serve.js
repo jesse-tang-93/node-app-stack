@@ -1,6 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
+// 身份验证中间件
 const passport = require("passport");
 // mongo Key
 const { mongoURI } = require("./config/keys");
@@ -38,6 +39,7 @@ const port = process.env.PORT || 5000;
 // passport 初始化
 app.use(passport.initialize());
 
+// passport 方法执行
 require("./config/passport")(passport);
 
 app.listen(port, () => {

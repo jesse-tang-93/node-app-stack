@@ -1,7 +1,11 @@
+/**
+ * jwt身份验证
+ */
 const JwtStrategy = require('passport-jwt').Strategy,
     ExtractJwt = require('passport-jwt').ExtractJwt;
 
 const mongoose = require('mongoose')  
+// 关联user表
 const User = mongoose.model("users")  
 const keys = require('../config/keys')
 var opts = {}
@@ -22,7 +26,13 @@ module.exports = passport => {
     //     return done(null, user)
     //   }
     // })
-    User.findById(jwt_payload.id)
     console.log(jwt_payload)
+    User.findById(jwt_payload.id).then(user=>{
+      if(user){
+        return done(null, user)
+      }
+      return done(null, false)
+    }).catch(err=> console.log(err))
+    
   }))
 }
