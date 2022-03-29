@@ -8,7 +8,11 @@ const { mongoURI } = require("./config/keys");
 const app = express();
 
 // ----------------------------------------------------------------
+// users
 const users = require("./routes/apis/users");
+// profile
+const profiles = require("./routes/apis/profiles")
+
 
 // bodyParser settings
 // 使用中间件 -bodyParser 更加简单的处理body数据
@@ -23,9 +27,11 @@ mongoose
   .then(() => console.log("mongo is ok"))
   .catch((err) => console.log(err));
 
+
+// 使用router 
 // catch users api user分发
 app.use("/api/users", users);
-
+app.use("/api/profile", profiles);
 
 
 
